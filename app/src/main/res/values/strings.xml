@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">FavYourFragments</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">LogOut</string>
+    <string name="user_name">Name</string>
+    <string name="user_password">Password</string>
+    <string name="BtnLogIn">SIGN IN</string>
+    <string name="SignUpLbl">Don\´t have an account. Sign up</string>
+    <string name="lblEmpresa"> FAVYOR NEIGHBOUR </string>
+
+    <string-array name="names">
+        <item>Padel</item>
+        <item>Tenis</item>
+        <item>Local Fiestas</item>
+        <item>Piscina</item>
+    </string-array>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

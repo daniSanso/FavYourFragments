@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.danielsanso.favyourfragments.login"
+    android:background="@drawable/login_background"
+    android:orientation="vertical"
+    android:id="@+id/listLayout">
+
+    <android.support.v7.widget.CardView
+
+        android:id="@+id/cardView"
+        android:layout_width="300dp"
+        android:layout_height="350dp"
+        android:layout_alignTop="@+id/floatingActionButtonreg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/cardlogin"
+        android:transitionName="cardShareTrans"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="1dp">
+
+
+        <TextView
+            android:id="@+id/idEmpresa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="9dp"
+            android:layout_marginTop="35dp"
+            android:fontFamily="casual"
+            android:text="@string/lblEmpresa"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="30dp"
+            android:transitionName="titleShareTrans"
+            tools:layout_editor_absoluteX="49dp"
+            tools:layout_editor_absoluteY="28dp" />
+
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="207dp"
+    android:background="@drawable/text_appereance"
+    >
+    <EditText
+        android:id="@+id/idLblPassword"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/idLblNombre"
+
+        android:background="@drawable/text_appereance5"
+        android:drawableLeft="@drawable/ic_lock"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:hint="@string/user_password"
+        android:inputType="textPassword"
+        android:textColor="@color/textColorSecundary"
+        android:transitionName="passShareTrans"
+        tools:layout_editor_absoluteX="66dp"
+        tools:layout_editor_absoluteY="155dp" />
+</android.support.design.widget.TextInputLayout>
+
+
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="136dp"
+    android:background="@drawable/text_appereance"
+
+    >
+
+    <EditText
+        android:id="@+id/idLblNombre"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignStart="@+id/idLblPassword"
+        android:layout_below="@+id/idEmpresa"
+        android:drawableLeft="@drawable/ic_person"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:hint="@string/user_name"
+android:background="@drawable/text_appereance5"
+        android:inputType="textPersonName"
+        android:textColor="@color/textColorSecundary"
+        android:transitionName="nameShareTrans"
+        tools:layout_editor_absoluteX="66dp"
+        tools:layout_editor_absoluteY="102dp">
+
+        <requestFocus></requestFocus> <!-- para que el foco este en name-->
+    </EditText>
+</android.support.design.widget.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/buttonLogIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/idLblNombre"
+            android:layout_below="@+id/idLblPassword"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="22dp"
+            android:layout_marginTop="270dp"
+            android:background="@drawable/button_appereance"
+            android:text="@string/BtnLogIn"
+            android:transitionName="butSignShareTrans"
+            tools:layout_editor_absoluteX="148dp"
+            tools:layout_editor_absoluteY="311dp" />
+
+        <TextView
+            android:id="@+id/forgotPass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonLogIn"
+            android:text="Forgot your password?"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="325dp"
+            android:layout_gravity="center_horizontal"
+            android:clickable="true"
+            android:textColorLink="@color/blackTrans"/>
+
+
+    </android.support.v7.widget.CardView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonreg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_addperson"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="29dp"
+        android:backgroundTint="@color/colorAccent"
+        android:transitionName="butPlusShareTrans"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
