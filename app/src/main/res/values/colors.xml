@@ -13,5 +13,7 @@
     <color name="redback">#92cc7272</color>
     <color name="green">#d956bf00</color>
     <color name="greenback">#8b93d65c</color>
+    <color name="colorPrimaryDarkShadow">#cce1780d</color>
+
 
 </resources>
