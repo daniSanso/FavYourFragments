@@ -53,7 +53,7 @@
 
 
                 <TextView
-                    android:id="@+id/textViewNombre"
+                    android:id="@+id/textViewNombreP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -63,7 +63,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textViewPiso"
+                    android:id="@+id/textViewPisoP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

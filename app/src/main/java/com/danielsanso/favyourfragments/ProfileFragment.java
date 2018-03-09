@@ -1,20 +1,37 @@
 package com.danielsanso.favyourfragments;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.content.pm.PackageManager;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,12 +44,20 @@ public class ProfileFragment extends Fragment {
 View vista;
     ImageView imagen;
     FloatingActionButton buttonFloating;
-    TextView backb,txtlike,txtunlike,numlik,numunlik;
+    TextView backb,txtlike,txtunlike,numlik,numunlik,nombre,piso;
     LinearLayout butlike,butunlike;
     boolean clck=false;
     boolean clck2=false;
+    FirebaseAuth mAuth;
+    ProgressDialog progressDialog;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
+
+
 
     int likea, unlikea;
+    private static final int CAMERA_REQUEST_CODE = 0;
 
     ListView listaDatos;
     public static ArrayList<DatosPerfil> Listaa;
@@ -41,6 +66,11 @@ View vista;
         // Required empty public constructor
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,10 +84,56 @@ View vista;
         backb=(TextView)vista.findViewById(R.id.backid);
         txtlike=(TextView)vista.findViewById(R.id.textlike);
         txtunlike=(TextView)vista.findViewById(R.id.textunlike);
+        nombre=(TextView)vista.findViewById(R.id.textViewNombreP);
+        piso=(TextView)vista.findViewById(R.id.textViewPisoP);
         butlike=(LinearLayout) vista.findViewById(R.id.clicklike);
         butunlike=(LinearLayout)vista.findViewById(R.id.clickunlike);
         numlik=(TextView)vista.findViewById(R.id.numlike1) ;
         numunlik=(TextView)vista.findViewById(R.id.numunlike1) ;
+
+        imagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                if(intent.resolveActivity(getActivity().getPackageManager())!=null){
+                    startActivityForResult(Intent.createChooser(intent,"select a picture for your profile"),CAMERA_REQUEST_CODE);
+                }
+            }
+        });
+
+        mAuth=FirebaseAuth.getInstance();
+        mAuthListener=(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser()!=null){
+                    mStorage= FirebaseStorage.getInstance().getReference();
+                    mDatabase= FirebaseDatabase.getInstance().getReference().child("usuarios");
+                    mDatabase.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            nombre.setText(dataSnapshot.child("name").getValue().toString());
+                            piso.setText(dataSnapshot.child("bloque").getValue().toString()+" "+dataSnapshot.child("piso").getValue().toString());
+                            String imageUrl=dataSnapshot.child("image").getValue().toString();
+                            if(!imageUrl.equals("default")|| TextUtils.isEmpty(imageUrl)){
+                                Context c = getActivity().getApplicationContext();
+                                Picasso.with(c).load(Uri.parse(dataSnapshot.child("image").getValue().toString())).into(imagen);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }else{
+                    Intent intent= new Intent(getActivity().getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
 
 
@@ -65,6 +141,7 @@ View vista;
         buttonFloating=(FloatingActionButton) vista.findViewById(R.id.floatingActionButton5);
 
         listaDatos=(ListView) vista.findViewById(R.id.lstDatosComentario);
+
 
         Listaa= new ArrayList<DatosPerfil>();
 
@@ -106,6 +183,8 @@ View vista;
                 startActivity(paso);
             }
         });*/
+
+
 
       /* imagen.setOnClickListener(new View.OnClickListener() {
            @Override

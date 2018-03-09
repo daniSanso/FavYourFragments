@@ -1,21 +1,36 @@
 package com.danielsanso.favyourfragments;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,15 +46,25 @@ public class InicioFragment extends Fragment {
     LinearLayout linear;
 
     FloatingActionButton fab, fab1, fab2, fab3;
-    TextView fal1, fal2, fal3;
+    TextView fal1, fal2, fal3,comunidad,nombreCompleto;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
-
+    FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
+private ImageView image;
 
     public InicioFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,16 +81,56 @@ public class InicioFragment extends Fragment {
         fab1 = (FloatingActionButton) vista.findViewById(R.id.floatingActionButtton1);
         fab2 = (FloatingActionButton) vista.findViewById(R.id.floatingActionButtton2);
         fab3 = (FloatingActionButton) vista.findViewById(R.id.floatingActionButtton3);
+        image = (ImageView) vista.findViewById(R.id.imageViewI);
 
         fal1 = (TextView) vista.findViewById(R.id.FloatLblPedirFavor);
         fal2 = (TextView) vista.findViewById(R.id.FloatLblInformarAveria);
         fal3 = (TextView) vista.findViewById(R.id.FloatLblReservaIns);
+        comunidad = (TextView) vista.findViewById(R.id.txtcomunidadIn);
+        nombreCompleto = (TextView) vista.findViewById(R.id.txtnombrecompletoIn);//mhv
 
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
 
         rotateForward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+
+
+        mAuth=FirebaseAuth.getInstance();
+
+
+        mAuthListener=(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser()!=null){
+                    mStorage= FirebaseStorage.getInstance().getReference();
+                    mDatabase= FirebaseDatabase.getInstance().getReference().child("usuarios");
+                    mDatabase.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            nombreCompleto.setText(dataSnapshot.child("name").getValue().toString());
+                            comunidad.setText(dataSnapshot.child("bloque").getValue().toString()+" "+dataSnapshot.child("piso").getValue().toString());
+                            String imageUrl=dataSnapshot.child("image").getValue().toString();
+                            if(!imageUrl.equals("default")|| TextUtils.isEmpty(imageUrl)){
+                                Context c = getActivity().getApplicationContext();
+                                Picasso.with(c).load(Uri.parse(dataSnapshot.child("image").getValue().toString())).into(image);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }else{
+                    Intent intent= new Intent(getActivity().getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+
 
         Lista = new ArrayList<DatosPerfil>();
 
@@ -93,13 +158,30 @@ public class InicioFragment extends Fragment {
         final Adaptador miadaptador = new Adaptador(getContext(), Lista);
         listaDatos.setAdapter(miadaptador);
 
-       /*listaDatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {//new O + enter en el parentesis
+       listaDatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {//new O + enter en el parentesis
             @Override                                                           //obtener el onjeto seleccionado
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Datos obj =(Datos) parent.getItemAtPosition(position);//retorna el onbj de la posicion indicada
+                DatosPerfil obj =(DatosPerfil) parent.getItemAtPosition(position);//retorna el onbj de la posicion indicada
     //animacion de la caja.
-                Intent paso = new Intent(getApplicationContext(),DetalleActivity.class);
-                paso.putExtra("objeto",(Serializable) obj); //guardamos el obj con la clave objeto
+                /*Intent paso = new Intent(getActivity().getApplicationContext(),AceptarFavorActivity.class);
+                paso.putExtra("objeto123",(Serializable) obj); //guardamos el obj con la clave objeto
+                //cuando trabajamos con clases, para pasar datos lo mejopr es
+                //serializar el obj complerto, cargarlo dentro de la intencion y pasarlo a la segunda pantala
+                startActivity(paso);*/
+
+            }
+        });
+
+       /* listaDatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {//new O + enter en el parentesis
+            @Override                                                           //obtener el onjeto seleccionado
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity().getApplicationContext(), "asdfghjjk" , Toast.LENGTH_SHORT).show();
+
+                DatosPerfil obj =(DatosPerfil) parent.getItemAtPosition(position);//retorna el onbj de la posicion indicada
+
+
+                Intent paso = new Intent(getActivity().getApplicationContext(),AceptarFavorActivity.class);
+                paso.putExtra("objeto123",(Serializable) obj); //guardamos el obj con la clave objeto
                 //cuando trabajamos con clases, para pasar datos lo mejopr es
                 //serializar el obj complerto, cargarlo dentro de la intencion y pasarlo a la segunda pantala
                 startActivity(paso);
