@@ -4,16 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
     tools:context="com.danielsanso.favyourfragments.SplashActivity">
 
+    <com.felipecsl.gifimageview.library.GifImageView
+        android:id="@+id/gifimageview"
+        android:scaleType="fitCenter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <ImageView
-        android:id="@+id/imgSplash"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        app:srcCompat="@drawable/logoescalera"
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_marginBottom="52dp" />
 
 
 </RelativeLayout>

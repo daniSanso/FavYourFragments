@@ -1,10 +1,14 @@
 package com.danielsanso.favyourfragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,13 +18,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
+    private ImageView image;
+    private TextView nombre,comunidad;
 
 
     @Override
@@ -57,6 +76,44 @@ public class MainActivity extends AppCompatActivity
                 inicioFragment,
                 inicioFragment.getTag()
         ).commit();
+        comunidad = (TextView) findViewById(R.id.txtcomunidadIn);
+        nombre = (TextView) findViewById(R.id.nombreNav);//mhv
+
+
+        mAuth=FirebaseAuth.getInstance();
+
+
+        mAuthListener=(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser()!=null){
+                    mStorage= FirebaseStorage.getInstance().getReference();
+                    mDatabase= FirebaseDatabase.getInstance().getReference().child("usuarios");
+                    mDatabase.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            nombre.setText(dataSnapshot.child("name").getValue().toString());
+                            comunidad.setText(dataSnapshot.child("bloque").getValue().toString()+" "+dataSnapshot.child("piso").getValue().toString());
+                            String imageUrl=dataSnapshot.child("image").getValue().toString();
+
+                            if(!imageUrl.equals("default")|| TextUtils.isEmpty(imageUrl)){
+                                Context c = getApplicationContext();
+                                Picasso.with(c).load(Uri.parse(dataSnapshot.child("image").getValue().toString())).into(image);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }else{
+                    Intent intent= new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -88,7 +145,8 @@ public class MainActivity extends AppCompatActivity
             mAuth.signOut();
             Toast t =Toast.makeText(this,"Logging out",Toast.LENGTH_LONG);
             t.show();
-            Intent intent= new Intent(getApplicationContext(),login.class);
+            finish();
+            Intent intent= new Intent(MainActivity.this,login.class);
             startActivity(intent);
 
             return true;

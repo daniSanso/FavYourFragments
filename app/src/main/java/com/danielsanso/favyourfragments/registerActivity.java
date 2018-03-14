@@ -117,7 +117,7 @@ public class registerActivity extends AppCompatActivity {
                         currentUserDB.child("name").setValue(name);
                         currentUserDB.child("bloque").setValue(bloque.getText().toString().trim());
                         currentUserDB.child("piso").setValue(piso.getText().toString().trim());
-                        currentUserDB.child("image").setValue("default");
+                        currentUserDB.child("image").setValue("");
 
                         Toast.makeText(registerActivity.this,user_id,Toast.LENGTH_SHORT).show();
                         Intent intent= new Intent(getApplicationContext(),login.class);

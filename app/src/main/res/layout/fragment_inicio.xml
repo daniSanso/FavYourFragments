@@ -30,24 +30,27 @@
                     android:orientation="vertical"
                     android:layout_alignLeft="@+id/imageView">
 
-                    <TextView
-                        android:id="@+id/txtcomunidadIn"
-                        android:layout_width="177dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
-                        android:layout_marginTop="10dp"
-                        android:text="Comunidad"
-                        android:textColor="#62606c" />
 
                     <TextView
                         android:id="@+id/txtnombrecompletoIn"
                         android:layout_width="177dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="60dp"
-                        android:layout_marginTop="3dp"
+                        android:layout_marginTop="10dp"
                         android:text="Nombre completo"
+                        android:textColor="#62606c"
+                        android:layout_marginBottom="0dp"/>
+                    <TextView
+                        android:id="@+id/txtcomunidadIn"
+                        android:layout_width="177dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginTop="0dp"
+                        android:text="Comunidad"
                         android:textColor="@android:color/darker_gray"
                         android:layout_marginBottom="10dp"/>
+
+
 
 
                 </LinearLayout>

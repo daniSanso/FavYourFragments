@@ -108,8 +108,10 @@ private ImageView image;
                     mDatabase.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            nombreCompleto.setText(dataSnapshot.child("name").getValue().toString());
-                            comunidad.setText(dataSnapshot.child("bloque").getValue().toString()+" "+dataSnapshot.child("piso").getValue().toString());
+                            String nombrre=dataSnapshot.child("name").getValue().toString();
+                            String comuniidadd=dataSnapshot.child("bloque").getValue().toString()+" "+dataSnapshot.child("piso").getValue().toString();
+                            nombreCompleto.setText(nombrre);
+                            comunidad.setText(comuniidadd);
                             String imageUrl=dataSnapshot.child("image").getValue().toString();
                             if(!imageUrl.equals("default")|| TextUtils.isEmpty(imageUrl)){
                                 Context c = getActivity().getApplicationContext();
